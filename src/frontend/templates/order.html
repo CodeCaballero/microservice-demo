@@ -77,4 +77,22 @@
     </main>
 
     {{ template "footer" . }}
+
+    {{ if $.show_success_toast }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof dismissAllToasts === "function") {
+                dismissAllToasts();
+            }
+            if (typeof showToast === "function") {
+                showToast({
+                    type: "success",
+                    title: "Purchase completed successfully!",
+                    message: "Your order {{ .order.OrderId }} has been placed. We've sent you a confirmation email.",
+                    duration: 8000
+                });
+            }
+        });
+    </script>
+    {{ end }}
     {{ end }}

@@ -390,11 +390,12 @@ func (fe *frontendServer) placeOrderHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	if err := templates.ExecuteTemplate(w, "order", injectCommonTemplateData(r, map[string]interface{}{
-		"show_currency":   false,
-		"currencies":      currencies,
-		"order":           order.GetOrder(),
-		"total_paid":      &totalPaid,
-		"recommendations": recommendations,
+		"show_currency":      false,
+		"currencies":         currencies,
+		"order":              order.GetOrder(),
+		"total_paid":         &totalPaid,
+		"recommendations":    recommendations,
+		"show_success_toast": true,
 	})); err != nil {
 		log.Println(err)
 	}

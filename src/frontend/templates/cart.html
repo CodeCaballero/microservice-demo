@@ -230,4 +230,23 @@
     {{ end }}
 
     {{ template "footer" . }}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var checkoutForm = document.querySelector(".cart-checkout-form");
+            if (!checkoutForm) {
+                return;
+            }
+            checkoutForm.addEventListener("submit", function () {
+                if (typeof showToast === "function") {
+                    showToast({
+                        type: "info",
+                        title: "Processing your order…",
+                        message: "Please wait while we confirm your purchase.",
+                        duration: 0
+                    });
+                }
+            });
+        });
+    </script>
 {{ end }}

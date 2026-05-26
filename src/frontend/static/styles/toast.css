@@ -1,0 +1,117 @@
+/**
+ * Copyright 2020 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  max-width: min(420px, calc(100vw - 48px));
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  color: #111111;
+  background: #ffffff;
+  border-left: 4px solid #853B5C;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast.toast-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast.toast-hiding {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+.toast-success {
+  border-left-color: #2e7d32;
+}
+
+.toast-info {
+  border-left-color: #853B5C;
+}
+
+.toast-error {
+  border-left-color: #CE0631;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.toast-success .toast-icon {
+  color: #2e7d32;
+}
+
+.toast-info .toast-icon {
+  color: #853B5C;
+}
+
+.toast-error .toast-icon {
+  color: #CE0631;
+}
+
+.toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  font-size: 15px;
+}
+
+.toast-message {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #444444;
+}
+
+.toast-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+  color: #9AA0A6;
+  cursor: pointer;
+  padding: 0;
+  margin: -4px -4px 0 0;
+}
+
+.toast-close:hover {
+  color: #111111;
+}
