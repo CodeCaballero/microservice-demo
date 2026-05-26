@@ -24,6 +24,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -64,11 +65,18 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve currencies"), http.StatusInternalServerError)
 		return
 	}
-	products, err := fe.getProducts(r.Context())
+	allProducts, err := fe.getProducts(r.Context())
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve products"), http.StatusInternalServerError)
 		return
 	}
+	categories := collectProductCategories(allProducts)
+	selectedCategory := strings.ToLower(strings.TrimSpace(r.URL.Query().Get("category")))
+	if selectedCategory != "" && !stringinSlice(categories, selectedCategory) {
+		selectedCategory = ""
+	}
+	products := filterProductsByCategory(allProducts, selectedCategory)
+
 	cart, err := fe.getCart(r.Context(), sessionID(r))
 	if err != nil {
 		renderHTTPError(log, r, w, errors.Wrap(err, "could not retrieve cart"), http.StatusInternalServerError)
@@ -108,12 +116,14 @@ func (fe *frontendServer) homeHandler(w http.ResponseWriter, r *http.Request) {
 	plat.setPlatformDetails(strings.ToLower(env))
 
 	if err := templates.ExecuteTemplate(w, "home", injectCommonTemplateData(r, map[string]interface{}{
-		"show_currency": true,
-		"currencies":    currencies,
-		"products":      ps,
-		"cart_size":     cartSize(cart),
-		"banner_color":  os.Getenv("BANNER_COLOR"), // illustrates canary deployments
-		"ad":            fe.chooseAd(r.Context(), []string{}, log),
+		"show_currency":     true,
+		"currencies":        currencies,
+		"products":          ps,
+		"categories":        categories,
+		"selected_category": selectedCategory,
+		"cart_size":         cartSize(cart),
+		"banner_color":      os.Getenv("BANNER_COLOR"), // illustrates canary deployments
+		"ad":                fe.chooseAd(r.Context(), []string{}, log),
 	})); err != nil {
 		log.Error(err)
 	}
@@ -624,6 +634,41 @@ func renderCurrencyLogo(currencyCode string) string {
 		logo = val
 	}
 	return logo
+}
+
+func collectProductCategories(products []*pb.Product) []string {
+	seen := make(map[string]struct{})
+	for _, p := range products {
+		for _, c := range p.GetCategories() {
+			c = strings.ToLower(strings.TrimSpace(c))
+			if c != "" {
+				seen[c] = struct{}{}
+			}
+		}
+	}
+	out := make([]string, 0, len(seen))
+	for c := range seen {
+		out = append(out, c)
+	}
+	sort.Strings(out)
+	return out
+}
+
+func filterProductsByCategory(products []*pb.Product, category string) []*pb.Product {
+	if category == "" {
+		return products
+	}
+	category = strings.ToLower(category)
+	var out []*pb.Product
+	for _, p := range products {
+		for _, c := range p.GetCategories() {
+			if strings.ToLower(c) == category {
+				out = append(out, p)
+				break
+			}
+		}
+	}
+	return out
 }
 
 func stringinSlice(slice []string, val string) bool {

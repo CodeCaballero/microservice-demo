@@ -39,9 +39,30 @@
 
         <div class="row hot-products-row px-xl-6">
 
-          <div class="col-12">
+          <div class="col-12 home-products-header">
             <h3>Hot Products</h3>
+            {{ if $.categories }}
+            <form class="home-category-filter" method="GET" action="{{ $.baseUrl }}/">
+              <label for="category">Category</label>
+              <div class="home-category-filter-select">
+                <select name="category" id="category" onchange="this.form.submit()">
+                  <option value="" {{ if not $.selected_category }}selected{{ end }}>All categories</option>
+                  {{ range $.categories }}
+                  <option value="{{ . }}" {{ if eq . $.selected_category }}selected{{ end }}>{{ . }}</option>
+                  {{ end }}
+                </select>
+                <img src="{{ $.baseUrl }}/static/icons/Hipster_DownArrow.svg" alt="" class="home-category-filter-chevron">
+              </div>
+            </form>
+            {{ end }}
           </div>
+
+          {{ if eq (len $.products) 0 }}
+          <div class="col-12 home-no-products">
+            <p>No products found in this category.</p>
+            <a class="cymbal-button-secondary" href="{{ $.baseUrl }}/">View all products</a>
+          </div>
+          {{ end }}
 
           {{ range $.products }}
           <div class="col-md-4 hot-product-card">
