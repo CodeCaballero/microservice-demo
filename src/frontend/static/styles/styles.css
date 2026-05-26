@@ -346,30 +346,27 @@ main {
 }
 
 .home-category-filter-select {
+  display: inline-block;
   position: relative;
 }
 
 .home-category-filter-select select {
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   min-width: 200px;
   height: 40px;
   padding: 0 36px 0 16px;
   font-size: 16px;
   border: 1px solid #acacac;
   border-radius: 8px;
-  background: #ffffff;
+  background-color: #ffffff;
+  background-image: url(../icons/Hipster_DownArrow.svg);
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 10px 5px;
   color: #111111;
   cursor: pointer;
-}
-
-.home-category-filter-chevron {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 5px;
-  pointer-events: none;
 }
 
 .home-no-products {
